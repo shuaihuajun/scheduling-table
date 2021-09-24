@@ -1,0 +1,7 @@
+node_modules/
+src/
+webpack.config.js
+Test.vue
+.github
+*.gif
+/index.js
