@@ -7,6 +7,7 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, './dist'),
         publicPath: '/dist/',
+        library: 'schedulingTable',
         filename: 'scheduling-table.min.js',
         libraryTarget: 'umd'
     },
