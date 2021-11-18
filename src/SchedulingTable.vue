@@ -1,7 +1,10 @@
 <template>
   <div class="course-table clearfix" :style="{ width: `${tableWidth}px` }">
     <div class="float-left">
-      <div class="top-table clearfix" :style="{ height: `${dayHeight}px` }">
+      <div
+        class="top-table clearfix"
+        :style="{ height: `${dayHeight}px`, top: `${stickyTop}px` }"
+      >
         <div
           class="menu float-left"
           :style="{ width: `${sectionWidth}px` }"
@@ -13,7 +16,7 @@
               'day',
               'float-left',
               'content-center',
-              nowDay == dayIndex + 1 ? 'active' : '',
+              showTimeline && nowDay == dayIndex + 1 ? 'active' : '',
             ]"
             :key="dayIndex"
             :style="{ width: `${dayWidth}px` }"
@@ -25,6 +28,7 @@
       <div class="clearfix position-relative">
         <div
           class="now-timeline"
+          v-if="showTimeline"
           :style="{
             top: `${nowTimelineTop}px`,
           }"
@@ -34,7 +38,11 @@
           </div>
           <div
             class="now-point"
-            :style="{ left: `${sectionWidth + (nowDay > 0 ? (nowDay - 1) : 0) * dayWidth}px` }"
+            :style="{
+              left: `${
+                sectionWidth + (nowDay > 0 ? nowDay - 1 : 0) * dayWidth
+              }px`,
+            }"
           ></div>
         </div>
         <div
@@ -71,7 +79,7 @@
               :class="[
                 'col',
                 'float-left',
-                nowDay == dayIndex + 1 ? 'active' : '',
+                showTimeline && nowDay == dayIndex + 1 ? 'active' : '',
               ]"
               :key="dayIndex"
               :style="{ width: `${dayWidth}px` }"
@@ -169,6 +177,14 @@ export default {
     initialCourses: {
       type: Array,
       default: () => [],
+    },
+    showTimeline: {
+      type: Boolean,
+      default: false,
+    },
+    stickyTop: {
+      type: Number,
+      default: 0,
     },
   },
   created() {
@@ -304,8 +320,9 @@ export default {
 .float-left {
   float: left;
 }
-.clearfix:before, .clearfix:after {
-  content: '';
+.clearfix:before,
+.clearfix:after {
+  content: "";
   display: block;
   clear: both;
 }
@@ -325,7 +342,6 @@ export default {
 .top-table {
   background-color: #fff;
   position: sticky;
-  top: 6px;
   z-index: 2;
 }
 .week-table {
