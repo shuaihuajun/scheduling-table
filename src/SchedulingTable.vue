@@ -89,13 +89,6 @@
                 v-for="(part, partIndex) in parts"
                 :key="partIndex"
                 :style="{ height: `${part.height}px` }"
-                @click="
-                  addCourse(
-                    dayIndex + 1,
-                    [part.start[0], 0],
-                    [part.start[0], 45]
-                  )
-                "
               ></div>
             </div>
           </div>
@@ -147,6 +140,21 @@
 <script>
 export default {
   name: "SchedulingTable",
+  model: {
+    prop: "courses",
+    event: "change",
+  },
+  props: {
+    courses: null,
+    showTimeline: {
+      type: Boolean,
+      default: false,
+    },
+    stickyTop: {
+      type: Number,
+      default: 0,
+    },
+  },
   data() {
     return {
       // 一周天数
@@ -172,20 +180,6 @@ export default {
       // 定时器
       timer: null,
     };
-  },
-  props: {
-    initialCourses: {
-      type: Array,
-      default: () => [],
-    },
-    showTimeline: {
-      type: Boolean,
-      default: false,
-    },
-    stickyTop: {
-      type: Number,
-      default: 0,
-    },
   },
   created() {
     this.timer = setInterval(() => {
@@ -243,10 +237,6 @@ export default {
         this.nightHeight;
       return tableHeight;
     },
-    // 课程信息
-    courses() {
-      return this.initialCourses;
-    },
     parts() {
       return {
         // 早课180分钟
@@ -287,27 +277,12 @@ export default {
       return num[1] ? num : "0" + num;
     },
     // 选中课程
-    editCourse(courseOriginalIndex) {
-      this.$emit("edit", courseOriginalIndex);
-    },
-    // 添加课程
-    addCourse(day, start, end) {
-      this.$emit(
-        "add",
-        {
-          name: "新建课程",
-          day,
-          start,
-          end,
-        },
-        (index) => {
-          this.editCourse(index);
-        }
-      );
+    editCourse(i) {
+      this.$emit("edit", i, this.courses[i]);
     },
     // 删除课程
-    removeCourse(originalIndex) {
-      this.$emit("remove", originalIndex);
+    removeCourse(i) {
+      this.$emit("remove", i, this.courses[i]);
     },
   },
 };
