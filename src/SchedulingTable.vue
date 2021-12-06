@@ -95,7 +95,7 @@
           <div>
             <div
               v-for="(course, index) in courses"
-              :key="index"
+              :key="course.id"
               class="course-wrap"
               :style="{
                 width: `${dayWidth}px`,
