@@ -1,7 +1,9 @@
 node_modules/
 src/
-webpack.config.js
-Test.vue
+dist/
+packages/
+public/
+*config.*
+demo.*
 .github
-*.gif
 /index.js

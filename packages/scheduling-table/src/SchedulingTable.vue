@@ -87,6 +87,7 @@
               <div
                 class="cell"
                 v-for="(part, partIndex) in parts"
+                @click="add(part)"
                 :key="partIndex"
                 :style="{ height: `${part.height}px` }"
               ></div>
@@ -94,7 +95,7 @@
           </div>
           <div>
             <div
-              v-for="(course, index) in courses"
+              v-for="(course, index) in modelValue"
               :key="course.id"
               class="course-wrap"
               :style="{
@@ -115,11 +116,11 @@
               <div class="course-content">
                 <div>{{ course.name }}</div>
                 <div>
-                  {{ course.start[0] | formatTime }}:{{
-                    course.start[1] | formatTime
+                  {{ formatTime(course.start[0]) }}:{{
+                    formatTime(course.start[1])
                   }}
-                  - {{ course.end[0] | formatTime }}:{{
-                    course.end[1] | formatTime
+                  - {{ formatTime(course.end[0]) }}:{{
+                    formatTime(course.end[1])
                   }}
                 </div>
                 <div class="actions clearfix">
@@ -136,16 +137,13 @@
     </div>
   </div>
 </template>
- 
+
 <script>
 export default {
   name: "SchedulingTable",
-  model: {
-    prop: "courses",
-    event: "change",
-  },
+  emits: ["update:modelValue", "add", "edit", "remove"],
   props: {
-    courses: null,
+    modelValue: null,
     showTimeline: {
       type: Boolean,
       default: false,
@@ -199,12 +197,6 @@ export default {
         this.pixelOfMinutes;
       this.nowTimeStr = `${this.formatTime(hours)}:${this.formatTime(minutes)}`;
     }, 1000);
-  },
-  filters: {
-    formatTime(num) {
-      num = "" + num;
-      return num[1] ? num : "0" + num;
-    },
   },
   computed: {
     // 刻度
@@ -271,23 +263,23 @@ export default {
     },
   },
   methods: {
-    // 格式化日期
     formatTime(num) {
       num = "" + num;
       return num[1] ? num : "0" + num;
     },
-    // 选中课程
-    editCourse(i) {
-      this.$emit("edit", i, this.courses[i]);
+    add(part) {
+      this.$emit("add", part);
     },
-    // 删除课程
+    editCourse(i) {
+      this.$emit("edit", i, this.modelValue[i]);
+    },
     removeCourse(i) {
-      this.$emit("remove", i, this.courses[i]);
+      this.$emit("remove", i, this.modelValue[i]);
     },
   },
 };
 </script>
- 
+
 <style scoped>
 * {
   box-sizing: border-box;
