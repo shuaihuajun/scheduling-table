@@ -39,9 +39,8 @@
           <div
             class="now-point"
             :style="{
-              left: `${
-                sectionWidth + (nowDay > 0 ? nowDay - 1 : 0) * dayWidth
-              }px`,
+              left: `${sectionWidth +
+                (nowDay > 0 ? nowDay - 1 : 0) * dayWidth}px`,
             }"
           ></div>
         </div>
@@ -93,44 +92,27 @@
               ></div>
             </div>
           </div>
-          <div>
-            <div
-              v-for="(course, index) in modelValue"
-              :key="course.id"
-              class="course-wrap"
-              :style="{
-                width: `${dayWidth}px`,
-                height: `${
-                  ((course.end[0] - course.start[0]) * 60 +
-                    (course.end[1] - course.start[1])) *
-                  pixelOfMinutes
-                }px`,
-                left: `${(course.day - 1) * dayWidth}px`,
-                top: `${
-                  ((course.start[0] - parts.morning.start[0]) * 60 +
-                    course.start[1]) *
-                  pixelOfMinutes
-                }px`,
-              }"
-            >
-              <div class="course-content">
-                <div>{{ course.name }}</div>
-                <div>
-                  {{ formatTime(course.start[0]) }}:{{
-                    formatTime(course.start[1])
-                  }}
-                  - {{ formatTime(course.end[0]) }}:{{
-                    formatTime(course.end[1])
-                  }}
-                </div>
-                <div class="actions clearfix">
-                  <div @click="removeCourse(index)" class="action delete">
-                    删除
-                  </div>
-                  <div @click="editCourse(index)" class="action edit">编辑</div>
-                </div>
-              </div>
-            </div>
+          <div
+            v-for="(course, index) in modelValue"
+            :key="course.id"
+            class="course-wrap"
+            :style="{
+              width: `${dayWidth}px`,
+              height: `${((course.end[0] - course.start[0]) * 60 +
+                (course.end[1] - course.start[1])) *
+                pixelOfMinutes}px`,
+              left: `${(course.day - 1) * dayWidth}px`,
+              top: `${((course.start[0] - parts.morning.start[0]) * 60 +
+                course.start[1]) *
+                pixelOfMinutes}px`,
+            }"
+          >
+            <CourseCard
+              @edit="editCourse"
+              @remove="removeCourse"
+              :index="index"
+              :course="course"
+            ></CourseCard>
           </div>
         </div>
       </div>
@@ -139,9 +121,15 @@
 </template>
 
 <script>
+import CourseCard from "./CourseCard.vue";
+import { fixNumber } from "./utils.js";
+
 export default {
   name: "SchedulingTable",
-  emits: ["update:modelValue", "add", "edit", "remove"],
+  components: {
+    CourseCard,
+  },
+  emits: ["add", "edit", "remove"],
   props: {
     modelValue: null,
     showTimeline: {
@@ -155,6 +143,7 @@ export default {
   },
   data() {
     return {
+      CardsData: this.modelValue,
       // 一周天数
       weekTable: ["周一", "周二", "周三", "周四", "周五", "周六", "周日"],
       // 一天节数
@@ -195,7 +184,7 @@ export default {
       this.nowTimelineTop =
         ((hours - this.parts.morning.start[0]) * 60 + minutes) *
         this.pixelOfMinutes;
-      this.nowTimeStr = `${this.formatTime(hours)}:${this.formatTime(minutes)}`;
+      this.nowTimeStr = `${fixNumber(hours)}:${fixNumber(minutes)}`;
     }, 1000);
   },
   computed: {
@@ -207,7 +196,7 @@ export default {
       const heightOfHours = 60 * this.pixelOfMinutes;
       for (let i = startHours; i < endHours; i++) {
         data.push({
-          label: `${this.formatTime(i)}:00`,
+          label: `${fixNumber(i)}:00`,
           height: heightOfHours,
         });
       }
@@ -263,18 +252,14 @@ export default {
     },
   },
   methods: {
-    formatTime(num) {
-      num = "" + num;
-      return num[1] ? num : "0" + num;
-    },
     add(part) {
       this.$emit("add", part);
     },
     editCourse(i) {
-      this.$emit("edit", i, this.modelValue[i]);
+      this.$emit("edit", i, this.CardsData[i]);
     },
     removeCourse(i) {
-      this.$emit("remove", i, this.modelValue[i]);
+      this.$emit("remove", i, this.CardsData[i]);
     },
   },
 };
@@ -365,49 +350,6 @@ export default {
   padding: 0 4px;
   color: #fff;
   transition: all 500ms;
-}
-.course-content {
-  position: relative;
-  background-color: #3f51b5;
-  color: #fff;
-  border-radius: 4px;
-  height: 100%;
-  padding: 4px 6px;
-  font-size: 12px;
-  transition: all 170ms;
-  overflow: hidden;
-}
-.course-content .actions {
-  display: none;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: hsla(0, 0%, 0%, 0.7);
-}
-.course-content .action {
-  float: left;
-  width: 50%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.course-content .action:hover {
-  color: #fff;
-}
-.course-content .action.delete:hover {
-  background: crimson;
-}
-.course-content .action.edit:hover {
-  background-color: #3f51b5;
-}
-.course-content:hover {
-  cursor: pointer;
-}
-.course-content:hover .actions {
-  display: block;
 }
 .parts {
   position: absolute;

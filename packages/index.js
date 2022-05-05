@@ -1,4 +1,4 @@
-import SchedulingTable from "./scheduling-table/index.js";
+import SchedulingTable from "./SchedulingTable.vue";
 
 const components = {
   SchedulingTable,
