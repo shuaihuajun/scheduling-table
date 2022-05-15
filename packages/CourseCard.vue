@@ -20,10 +20,9 @@ export default {
   name: "CourseCard",
   emits: ["add", "edit", "remove"],
   props: {
-    course: null,
+    course: Object,
     index: Number,
   },
-  created() {},
   methods: {
     fixNumber,
     formatTime(num) {

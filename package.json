@@ -1,6 +1,6 @@
 {
   "name": "@lanserdi/scheduling-table",
-  "version": "1.4.4",
+  "version": "1.4.6",
   "description": "VUE-based scheduling components",
   "main": "lib/SchedulingTable.umd.min.js",
   "scripts": {

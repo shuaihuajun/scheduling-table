@@ -373,6 +373,9 @@ export default {
   justify-content: center;
   color: #bbb;
 }
+.part:last-child {
+  border-bottom: 1px solid #eee;
+}
 .position-relative {
   position: relative;
 }
