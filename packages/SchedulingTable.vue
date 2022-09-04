@@ -132,6 +132,10 @@ export default {
   emits: ["add", "edit", "remove"],
   props: {
     modelValue: null,
+    minuteHeight: {
+      type: Number,
+      default: 1,
+    },
     showTimeline: {
       type: Boolean,
       default: false,
@@ -157,7 +161,7 @@ export default {
       // 一节高度
       sectionHeight: 100,
       // 一分钟所占像素
-      pixelOfMinutes: 1,
+      pixelOfMinutes: this.minuteHeight,
       // now-timeline 顶部定位
       nowTimelineTop: 0,
       // now time str

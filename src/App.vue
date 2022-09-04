@@ -1,5 +1,6 @@
 <template>
   <SchedulingTable
+    :minuteHeight="2"
     @add="add"
     @remove="remove"
     @edit="showEditCourseModal"
